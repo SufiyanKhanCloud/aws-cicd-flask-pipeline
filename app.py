@@ -12,7 +12,7 @@ APP_VERSION = os.getenv("APP_VERSION", "1.0.0")
 @app.route("/")
 def index():
     return jsonify(
-        message="Shipped via CodePipeline -> CodeBuild -> CodeDeploy",
+        message="Shipped automatically from GitHub push",
         version=APP_VERSION,
         served_by=socket.gethostname(),
         time_utc=datetime.now(timezone.utc).isoformat(timespec="seconds"),
