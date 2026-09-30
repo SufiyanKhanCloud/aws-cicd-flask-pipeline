@@ -1,0 +1,30 @@
+version: 0.2
+
+env:
+  parameter-store:
+    DOCKERHUB_USER: /ci-demo/dockerhub/username
+    DOCKERHUB_TOKEN: /ci-demo/dockerhub/token
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.12
+  pre_build:
+    commands:
+      - pip install -r requirements.txt -r requirements-dev.txt
+      - python -m pytest -q
+  build:
+    commands:
+      - |
+        set -e
+        IMAGE="$DOCKERHUB_USER/karachi-status-api"
+        TAG=$(echo "$CODEBUILD_RESOLVED_SOURCE_VERSION" | cut -c1-7)
+        echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USER" --password-stdin
+        docker build -t "$IMAGE:$TAG" -t "$IMAGE:latest" .
+        docker push "$IMAGE:$TAG"
+        docker push "$IMAGE:latest"
+
+artifacts:
+  files:
+    - appspec.yml
+    - scripts/**/*
