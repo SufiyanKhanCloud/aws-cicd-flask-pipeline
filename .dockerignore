@@ -1,0 +1,11 @@
+.git
+.venv
+__pycache__
+.pytest_cache
+.env
+scripts
+test_app.py
+requirements-dev.txt
+buildspec.yml
+appspec.yml
+README.md
